@@ -1,0 +1,43 @@
+-> Create a script bot which will login to all device periodically to capture output of few commands like show interface status, show process cpu history
+
+->  Run commands to custom group of devices like vlan 101...  or some other command
+
+-> which can also check the changes to the device config compared to last config downloaded, can also send mails based on alert
+
+-> Backup the Device config
+
+-> Check all the subnet's in the network by checking interface config
+
+-> Also can check cdp/LLDP neighbor or interface descrption for firewall ( or need to check how to find the Firewall)
+
+
+
+
+************************************************************************************
+************************************************************************************
+Function : 1
+-> Login to device and copy the Run config and also find out the changes made compared to last output and Email the changes
+-> This Script should also be able to collect the output of few commands mentioned in a text file and will verify the change
+show cdp nei
+show interface status
+ping 8.8.8.8
+-> There should be option to add/modify the commands
+
+Function : 2
+-> Login to all devices and checks which Vlan, ip address subnets are behind them
+
+Function : 3
+-> Script to run a single command or set of cmds on many devices
+-> This script will also verify post changes output and should be able to rollback if all/few changes . Use EEM script for this.
+
+Function : 4
+-> This function should be able to modify the commands we want to run or change list of Devices
+
+*************************************************************************************
+Implementation work flow
+*************************************************************************************
+-> Script would run in the background based on cron job scheduled
+-> Manually run the script for functions like function 2,3,4
+-> When Script is manually started , at first it should be able to give us options regarding what to do
+-> Based on our input as per the above step it will invoke the necessary script
+-> So idea is to design individual scripts for all the functions
