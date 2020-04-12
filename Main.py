@@ -9,14 +9,24 @@ def Displayonstart():
     3.) Manually backup the Devices \n
     Apart from this I can also check for below data from my database:
     4.) Check that subnet is behind which device \n """)
-    input1 = input("Type the function you want me to execute else type 9 to quit: \n")
-    return int(input1)
+    while True:
+        try:
+            input1 = int(input("Type the function you want me to execute else type 9 to quit: \n"))
+        except ValueError:
+            global randomno  ### Using global variable here
+            if randomno == 3:
+                sys.exit("I gave you many chances")
+            print("Not an integer! Try again.")
+            randomno = randomno + 1
+            continue
+        else:
+            return input1
+            break
 
-randomno = 1
 while True:
-    input1 = Displayonstart()
-    if randomno == 3:
+    if randomno == 4:
         sys.exit("You were given many chances")
+    input1 = Displayonstart()
     if input1 == 9 :
         sys.exit("You choosed option 9... I quit")
     if input1 != 9 and input1 > 5 or input1 == 0 or type(input1) is not int :
