@@ -6,10 +6,10 @@ randomno = 1
 def msg():
     print ("My Name is Robota and I can perform below tasks for you: ")
     print ("""1.) Manually copy the Device config's
-    2.) Run commands on multiple Devices
-    3.) Manually backup the Devices \n
+2.) Run commands on multiple Devices
+3.) Manually backup the Devices
     Apart from this I can also check for below data from my database:
-    4.) Check that subnet is behind which device \n """)
+4.) Check that subnet is behind which device \n """)
 def Displayonstart():
 #    msg()
     while True:

@@ -1,5 +1,5 @@
-no = 5
-print(type(no))
+import sys
+import os
 
-if no != 9 and no > 4:
-    print ("whsat")
+sys.path.append(os.path.abspath('..')) ## This will add parent directory to sys.path
+print (sys.path[-1])
