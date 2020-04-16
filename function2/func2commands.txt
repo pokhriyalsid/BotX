@@ -1,2 +1,0 @@
-show ip int brief | ex unas
-show cdp neighbor
