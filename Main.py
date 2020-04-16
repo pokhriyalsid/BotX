@@ -1,4 +1,4 @@
-## This is the main Robota script via which we will call the sub-scripts for different functions
+ ## This is the main Robota script via which we will call the sub-scripts for different functions
 import time
 import sys
 import subprocess
@@ -35,8 +35,9 @@ while True:
     input1 = Displayonstart()
     if input1 == 9 :
         sys.exit("You choosed option 9... I quit")
-    if input1 != 9 and input1 > 5 or input1 == 0 or type(input1) is not int :
-        print ("2ry AgAiN I DoNt uDerstand U")
+    if input1 != 9 and input1 > 5 or input1 == 0 or type(input1) is not int:
+        if randomno < 3:
+            print ("2ry AgAiN I DoNt uDerstand U")
         randomno = randomno + 1
         continue
     else:
