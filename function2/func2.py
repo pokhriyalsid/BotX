@@ -14,6 +14,6 @@ sys.path.append(os.path.dirname(os.getcwd())) ## Modifying sys.path in order to 
 
 from CommonFunc import CommonFunc # from CommonFunc package importing CommonFunc module
 
-cmds = CommonFunc.commandlist(os.getcwd() + '\\func2commands.json', 'Cisco') ## commandlist function excepts the path of the file
+cmds = CommonFunc.commandlist(os.path.dirname(os.getcwd()) + '\\Jsonfiles' + '\\func2commands.json', 'Juniper') ## commandlist function excepts the path of the file
 
 print(cmds)
