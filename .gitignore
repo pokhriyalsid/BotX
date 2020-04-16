@@ -3,4 +3,3 @@ test*
 # this will ignore any files ending with ex123
 *ex123
 # Below will ignore all _pycache_ folder
-**/__pycache__
