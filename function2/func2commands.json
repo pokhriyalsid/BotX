@@ -1,0 +1,8 @@
+{
+  "Cisco": [
+    "show ip int brief", "show cdp nei", "show interface status"
+  ],
+  "Juniper": [
+    "get interface"
+  ]
+}
