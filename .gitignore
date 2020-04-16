@@ -1,2 +1,3 @@
-test*
-*ex123
+test* # This will ignore my test.py files
+*ex123 # this will ignore any files ending with ex123
+**/_pycache_
