@@ -25,6 +25,8 @@ ping 8.8.8.8
 
 Function : 2
 -> Login to all devices and checks which Vlan, ip address subnets are behind them
+-> This script should be used to run only show commands
+-> This script should be run manually
 
 Function : 3
 -> Script to run a single command or set of cmds on many devices
