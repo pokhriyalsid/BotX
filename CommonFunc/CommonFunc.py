@@ -8,11 +8,11 @@ def devicelogin(list):
 
 def devicelist(filepath):       ##We would be using json files and will pass them here when calling this function
     with open(filepath) as func2devicelist:
-        devlist = func2devicelist.read()  ## func2devicelist.read() is json representation hence using loads() to convert it into a json dictionary
-        deviplist = []
-        for items in devlist.splitlines():
-            deviplist.append(items.split()[-1])
-        return devlist.splitlines(), deviplist ## First we are returning the list where each element has the device ip and device name and 2nd we are only returning the device ip
+        jsonstring = func2devicelist.read()
+        jsondict = json.loads(jsonstring)## func2devicelist.read() is json representation hence using loads() to convert it into a json dictionary
+        ciscodevicelist = jsondict['Cisco']     ##These would be a list
+        juniperdevicelist = jsondict['Juniper']
+        return ciscodevicelist, juniperdevicelist
 
 def commandlist(filepath, devicevendor):##filepath variable would be json file and devicevendor is as the name says
     with open(filepath) as cmd:
