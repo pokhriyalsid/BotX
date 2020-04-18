@@ -38,7 +38,6 @@ if len(Ciscodevicelist) > 0:
     for elem in ThreadlistCisco:
     #    print("Logging to {}".format(Ciscodevicelist[n]['Name']))
         elem.start()   ### Note try and except exception statements are to be added in CommonFunc module, they are not working if added here
-
         n = n + 1
 
 
