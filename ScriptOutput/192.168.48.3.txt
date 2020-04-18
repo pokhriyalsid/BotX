@@ -1,0 +1,13 @@
+show ip int brief 
+Interface              IP-Address      OK? Method Status                Protocol
+FastEthernet0/0        192.168.48.3    YES manual up                    up      
+GigabitEthernet1/0     unassigned      YES unset  administratively down down     
+************************
+show cdp nei 
+Capability Codes: R - Router, T - Trans Bridge, B - Source Route Bridge
+                  S - Switch, H - Host, I - IGMP, r - Repeater, P - Phone, 
+                  D - Remote, C - CVTA, M - Two-port Mac Relay 
+
+Device ID        Local Intrfce     Holdtme    Capability  Platform  Port ID
+Router1.testlab  Fas 0/0           158               R    7206VXR   Fas 0/0 
+************************
