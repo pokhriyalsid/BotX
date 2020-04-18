@@ -2,8 +2,26 @@ import netmiko
 import os
 import sys
 import json
-def devicelogin(list):
-    netconnect = netmiko.ConnectHandler(**list)
+result = 'nil'
+def devicelogin(list, cmdlist):
+    try:
+        netconnect = netmiko.ConnectHandler(**list)
+    except netmiko.ssh_exception.NetmikoTimeoutException:
+        print("Cant Login to Device {}".format(list['host']))
+    except netmiko.ssh_exception.NetMikoAuthenticationException:
+        print("Credentials not working for {}".format(list['host']))
+    else:
+        for cmds in cmdlist:
+            output = netconnect.send_command(cmds)
+            print(cmds)
+            with open('deviceoutput.txt', 'a+') as file:
+                file.write(cmds)
+                print(' ', file= file)
+                file.write(output)
+                print(' ', file= file)
+                print('************************', file = file)
+
+
     # {'device_type':'cisco_ios' , 'host':IPList[num - 1], 'username':Username, 'password':Pwd, 'secret' : 'test'}
 
 def devicelist(filepath):       ##We would be using json files and will pass them here when calling this function
