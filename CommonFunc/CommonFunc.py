@@ -13,8 +13,8 @@ def devicelogin(list, cmdlist):
     else:
         for cmds in cmdlist:
             output = netconnect.send_command(cmds)
-            print(cmds)
-            with open('deviceoutput.txt', 'a+') as file:
+            filepath = os.path.dirname(os.getcwd()) + '\\' + "ScriptOutput" + '\\' + list['host'] + '.txt'
+            with open(filepath, 'a+') as file:
                 file.write(cmds)
                 print(' ', file= file)
                 file.write(output)
