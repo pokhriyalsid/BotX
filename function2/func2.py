@@ -9,6 +9,7 @@
 import netmiko
 import sys
 import os
+import threading
 
 sys.path.append(os.path.dirname(os.getcwd())) ## Modifying sys.path in order to use CommonFunc package
 
@@ -24,9 +25,22 @@ Ciscocommandlist = CommonFunc.commandlist(os.path.dirname(os.getcwd()) + '\\Json
 Junipercommandlist = CommonFunc.commandlist(os.path.dirname(os.getcwd()) + '\\Jsonfiles' + '\\func2commands.json', 'Juniper')
 
 # Here later i will add code to update user that which commands will be run on which devices and also if they want to update the command list or devicelist then they will be redirected to a different function.
-cisconetmikodictobj = []  ## This list will have the parameters in the format we pass to netmiko ConnectHandler
+cisconetmikoobj = []  ## This list will have the parameters in the format we pass to netmiko ConnectHandler
 if len(Ciscodevicelist) > 0:
     for items in Ciscodevicelist:
-        cisconetmikodictobj.append({'device_type':'cisco_ios' , 'host':items['IP'], 'username':Username, 'Password':Pwd, 'secret' : 'test'})
+        cisconetmikoobj.append({'device_type':'cisco_ios' , 'host':items['IP'], 'username':Username, 'password':Pwd})
+    ThreadlistCisco = []
+    n = 1
+    for items in cisconetmikoobj:
+        ThreadlistCisco.append(threading.Thread(target=CommonFunc.devicelogin, name= 'Thread' + str(n), args = [items, Ciscocommandlist]))
+        n = n+ 1
+    n = 0
+    for elem in ThreadlistCisco:
+    #    print("Logging to {}".format(Ciscodevicelist[n]['Name']))
+        elem.start()   ### Note try and except exception statements are to be added in CommonFunc module, they are not working if added here
+
+        n = n + 1
+
+
 if len(Ciscodevicelist) == 0:
     print("There are no Cisco device mentioned in the file to run commands on")
