@@ -24,6 +24,24 @@ Ciscodevicelist, juniperdevicelist = CommonFunc.devicelist(os.path.dirname(os.ge
 Ciscocommandlist = CommonFunc.commandlist(os.path.dirname(os.getcwd()) + '\\Jsonfiles' + '\\func2commands.json', 'Cisco')
 Junipercommandlist = CommonFunc.commandlist(os.path.dirname(os.getcwd()) + '\\Jsonfiles' + '\\func2commands.json', 'Juniper')
 
+
+def devicelogin(list, cmdlist):
+    try:
+        netconnect = netmiko.ConnectHandler(**list)
+    except netmiko.ssh_exception.NetmikoTimeoutException:
+        print("Cant Login to Device {}".format(list['host']))
+    except netmiko.ssh_exception.NetMikoAuthenticationException:
+        print("Credentials not working for {}".format(list['host']))
+    else:
+        for cmds in cmdlist:
+            output = netconnect.send_command(cmds)
+            filepath = os.path.dirname(os.getcwd()) + '\\' + "ScriptOutput" + '\\' + list['host'] + '.txt'
+            with open(filepath, 'a+') as file:
+                file.write(cmds)
+                print(' ', file= file)
+                file.write(output)
+                print(' ', file= file)
+                print('************************', file = file)
 # Here later i will add code to update user that which commands will be run on which devices and also if they want to update the command list or devicelist then they will be redirected to a different function.
 cisconetmikoobj = []  ## This list will have the parameters in the format we pass to netmiko ConnectHandler
 if len(Ciscodevicelist) > 0:
@@ -32,7 +50,7 @@ if len(Ciscodevicelist) > 0:
     ThreadlistCisco = []
     n = 1
     for items in cisconetmikoobj:
-        ThreadlistCisco.append(threading.Thread(target=CommonFunc.devicelogin, name= 'Thread' + str(n), args = [items, Ciscocommandlist]))
+        ThreadlistCisco.append(threading.Thread(target=devicelogin, name= 'Thread' + str(n), args = [items, Ciscocommandlist]))
         n = n+ 1
     n = 0
     for elem in ThreadlistCisco:
