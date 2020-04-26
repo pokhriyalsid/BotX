@@ -10,6 +10,7 @@ import netmiko
 import sys
 import os
 import threading
+import time
 
 sys.path.append(os.path.dirname(os.getcwd())) ## Modifying sys.path in order to use CommonFunc package
 
@@ -33,15 +34,22 @@ def devicelogin(list, cmdlist):
     except netmiko.ssh_exception.NetMikoAuthenticationException:
         print("Credentials not working for {}".format(list['host']))
     else:
+        filepath = os.path.dirname(os.getcwd()) + '\\' + "ScriptOutput" + '\\' + list['host'] + '.txt'
+        file = open(filepath, 'a+')
         for cmds in cmdlist:
             output = netconnect.send_command(cmds)
-            filepath = os.path.dirname(os.getcwd()) + '\\' + "ScriptOutput" + '\\' + list['host'] + '.txt'
-            with open(filepath, 'a+') as file:
-                file.write(cmds)
-                print(' ', file= file)
-                file.write(output)
-                print(' ', file= file)
-                print('************************', file = file)
+            print('************************', file = file)
+            file.write(cmds)
+            print(' ', file= file)
+            file.write(output)
+            print(' ', file= file)
+        #    print('************************', file = file)
+
+        print("Script Ended at {}".format(time.asctime()), file = file)
+        print('************************', file = file)
+        print('************************', file = file)
+        print('\n'*3, file = file)
+        file.close()
 # Here later i will add code to update user that which commands will be run on which devices and also if they want to update the command list or devicelist then they will be redirected to a different function.
 cisconetmikoobj = []  ## This list will have the parameters in the format we pass to netmiko ConnectHandler
 if len(Ciscodevicelist) > 0:
