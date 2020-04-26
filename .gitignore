@@ -4,3 +4,5 @@ test*
 *ex123
 # Below will ignore all _pycache_ folder
 **/__pycache__/
+# Below will ignore the output generated during testing in my Local PC
+/ScriptOutput/
