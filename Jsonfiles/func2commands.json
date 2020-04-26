@@ -1,6 +1,6 @@
 {
   "Cisco": [
-    "show ip int brief", "show cdp nei"
+    "show ip int brief", "show cdp nei", "show vlan"
   ],
   "Juniper": [
     "get interface"
