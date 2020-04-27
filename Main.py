@@ -31,7 +31,7 @@ def Displayonstart():
 while True:
     if randomno == 4:
         sys.exit("You were given many chances")
-    subprocess.run('cls', shell = True)
+    #subprocess.run('cls', shell = True)
     input1 = Displayonstart()
     if input1 == 9 :
         sys.exit("You choosed option 9... I quit")
