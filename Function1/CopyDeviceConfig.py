@@ -1,3 +1,4 @@
+# This script is to be scheuled every Sunday . Use Linux Crontab for this.
 import os
 import json
 import netmiko
