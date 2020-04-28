@@ -17,6 +17,7 @@ Pwd = 'test'
 x = time.asctime()    # x is a string object returned
 timestring = x.split()
 
+
 def devicelogin(devicelist, DeviceN):
     try:
         netconnect = netmiko.ConnectHandler(**devicelist)
@@ -30,7 +31,6 @@ def devicelogin(devicelist, DeviceN):
         try :
             FolderName = os.path.dirname(os.getcwd()) + '\\' + 'ScriptOutput' + '\\' + 'RunningConfig' + '\\'+ DeviceN
 
-            #devicelist['host']
             os.mkdir(FolderName) ## This will create a folder with name of the Router
             ## This code is under try to catch exception if folder already exists
         except FileExistsError:
@@ -53,13 +53,61 @@ else:
         n = n + 1
 
     n = 0
-    for threads in ciscothreadlist:
-        if (n+1)%5 == 0:            ## This will make sure if more than 5 devices are there is the device list
-            threads.join()      ## then after the 5th device there is some pause in the code
-            while True:
-                no = 1
-                if ciscothreadlist[n].is_alive():
-                    print("")
+    ##Below is old code , keeping it safe if required later
+#    for threads in ciscothreadlist:
+#        if (n+1)%5 == 0:            ## This will make sure if more than 5 devices are there is the device list
+#            threads.join()      ## then after the 5th device there is some pause in the code
+#            while True:
+#                no = 1
+#                if ciscothreadlist[n].is_alive():
+#                    print("Still working on {}".format(Ciscodevicelist[no]['Name']))
+#        threads.start()
+#        n = n + 1
 
-        threads.start()
+    for threads in ciscothreadlist:
+        if (n+1)%5 == 0:
+            threads.start()     ## This will make sure if more than 5 devices are there in the device list
+            threads.join()      ## then the script waits for the 5th device to complete
+                                ## And will also check if commands have exexuted on the last 5 devices
+            no = 1              ## as per below while loop
+            while True:
+                if ciscothreadlist[n].is_alive():
+                    print("Still working on {}".format(Ciscodevicelist[n]['Name']))
+                    time.sleep(2)
+                    if no == 15:  ## So if we have waited more than 30 sec then exit the function
+                        sys.exit("Exiting the function")
+                    no = no + 1
+                    continue
+                if ciscothreadlist[n-1].is_alive():
+                    print("Still working on {}".format(Ciscodevicelist[n-1]['Name']))
+                    time.sleep(2)
+                    if no == 15:  ## So if we have waited more than 30 sec then exit the function
+                        sys.exit("Exiting the function")
+                    no = no + 1
+                    continue
+                if ciscothreadlist[n-2].is_alive():
+                    print("Still working on {}".format(Ciscodevicelist[n-2]['Name']))
+                    time.sleep(2)
+                    if no == 15:  ## So if we have waited more than 30 sec then exit the function
+                        sys.exit("Exiting the function")
+                    no = no + 1
+                    continue
+                if ciscothreadlist[n-3].is_alive():
+                    print("Still working on {}".format(Ciscodevicelist[n-3]['Name']))
+                    time.sleep(2)
+                    if no == 15:  ## So if we have waited more than 30 sec then exit the function
+                        sys.exit("Exiting the function")
+                    no = no + 1
+                    continue
+                if ciscothreadlist[n-4].is_alive():
+                    print("Still working on {}".format(Ciscodevicelist[n-4]['Name']))
+                    time.sleep(2)
+                    if no == 15:  ## So if we have waited more than 30 sec then exit the function
+                        sys.exit("Exiting the function")
+                    no = no + 1
+                    continue
+                else:
+                    break
+            continue ### This continue is so that below threads.start() wont come in script for the 5th item
+        threads.start() ## as it is already started
         n = n + 1
