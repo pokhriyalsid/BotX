@@ -11,6 +11,7 @@ def devicelogin(list, cmdlist):
     except netmiko.ssh_exception.NetMikoAuthenticationException:
         print("Credentials not working for {}".format(list['host']))
     else:
+        netconnect.send_command('terminal length 0')
         for cmds in cmdlist:
             output = netconnect.send_command(cmds)
             filepath = os.path.dirname(os.getcwd()) + '\\' + "ScriptOutput" + '\\' + list['host'] + '.txt'
@@ -41,3 +42,17 @@ def commandlist(filepath, devicevendor):##filepath variable would be json file a
         if devicevendor == "Juniper":
             cmdlist = cmddictjson['Juniper']
             return cmdlist
+
+def devicelogin_1(list, cmdlist):
+    try:
+        netconnect = netmiko.ConnectHandler(**list)
+    except netmiko.ssh_exception.NetmikoTimeoutException:
+        print("Cant Login to Device {}".format(list['host']))
+    except netmiko.ssh_exception.NetMikoAuthenticationException:
+        print("Credentials not working for {}".format(list['host']))
+    else:
+    #    return netconnect
+        output = ''
+        for cmds in cmdlist:
+            output = output + netconnect.send_command(cmds)
+        return output
