@@ -6,3 +6,5 @@ test*
 **/__pycache__/
 # Below will ignore the output generated during testing in my Local PC
 ScriptOutput/
+# Ignore all .txt files
+*.txt
