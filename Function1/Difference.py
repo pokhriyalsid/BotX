@@ -14,8 +14,8 @@ from CommonFunc import CommonFunc
 Username = 'test'
 Pwd = 'test'
 
-Ciscodevicelist, juniperdevicelist = CommonFunc.devicelist(os.path.dirname(os.getcwd()) + '\\Jsonfiles' + '\\DeviceList.json')
-RunconfigDirPath = os.path.dirname(os.getcwd()) + "\\" + "ScriptOutput" + "\\" + "RunningConfig"
+Ciscodevicelist, juniperdevicelist = CommonFunc.devicelist(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '\\Jsonfiles' + '\\DeviceList.json')
+RunconfigDirPath = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\\" + "ScriptOutput" + "\\" + "RunningConfig"
 Dirlist = os.listdir(RunconfigDirPath)  ## Here we are putting all the directories in the folder /Scriptoutput/RunningConfig/ in a list Dirlist.. This will be list of directories created after running config is copied
 
 
@@ -32,7 +32,7 @@ def DiffinRunConfig(): # This function will check for changes in the config peri
         #    Diff = diffios.Compare(oldfile, newfile, ignorefile) ## Later will add ignore.txt to ignore irrelevant changes
             Diff = diffios.Compare(oldfile, newfile)
             with open(filepath + '\\' + 'Difference.txt', 'w+') as diffile:
-                print ("Running config difference between {} and {}".format(newfile, oldfile), file=diffile)
+                print ("Running config difference between {} and {}".format(newfile.split('\\')[-1], oldfile.split('\\')[-1]), file=diffile)
                 print (Diff.delta(), file=diffile)
                 print ('_'*40, file=diffile)
             #ignorefile.close()
@@ -60,6 +60,7 @@ def CurrentDif(): #This function will check changes in the config comparing last
                     with open('CurrentR.txt', 'w+') as currentrun:
                         print(latestoutput, file=currentrun)
                     Diff = diffios.Compare(lastfile,'CurrentR.txt' )
+                    print("Below is the difference between Current Config and config copied on {}".format(lastfile.split('\\')[-1]))
                     print(Diff.delta())
 
 

@@ -29,6 +29,10 @@ def devicelogin(devicelist, DeviceN):
     else:
         netconnect.send_command("terminal length 0")
         runconfig = netconnect.send_command("show running-config")
+        otheroutput1 = 'show cdp nei' + '\n' + netconnect.send_command('show cdp nei')
+        otheroutput2 = 'show ip int brief | ex unas' + '\n' + netconnect.send_command('show ip int brief | ex unas')
+        msg = "Output was collected at {}".format(time.asctime())
+        finalotheroutput = msg + '\n' + '\n' + otheroutput1 + '\n' + '**'*20 + '\n' + otheroutput2
         try :
             FolderName = os.path.dirname(os.getcwd()) + '\\' + 'ScriptOutput' + '\\' + 'RunningConfig' + '\\'+ DeviceN
 
@@ -37,8 +41,11 @@ def devicelogin(devicelist, DeviceN):
         except FileExistsError:
             pass
         pathrun = FolderName + "\\" + DeviceN + "_" + timestring[2] + "_" + timestring[1] + "_" +  timestring[3].split(':')[0] + "Hour" + "_" + "run.txt"
+        pathother = FolderName + "\\" + DeviceN + "_" + "OtherOutput.txt"
         with open(pathrun, 'w+') as outputfile:
             outputfile.write(runconfig)
+        with open(pathother, 'w+') as otherfile:
+            otherfile.write(finalotheroutput)
 
 Ciscodevicelist, juniperdevicelist = CommonFunc.devicelist(os.path.dirname(os.getcwd()) + '\\Jsonfiles' + '\\DeviceList.json')
 cisconetmikoobj = []
