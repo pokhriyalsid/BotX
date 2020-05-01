@@ -2,11 +2,12 @@
 import time
 import sys
 import subprocess
+from Function1 import Difference
 randomno = 1
 def msg():
     print ("My Name is Robota and I can perform below tasks for you: ")
-    print ("""1.) Manually copy the Device config's
-2.) Run commands on multiple Devices
+    print ("""1.) I copy device runnig-config periodically and check if any changes made by comparing last to configuration copied by me. I can also compare current run config with the Last config I copied. Tell me Device Name and I will do that for you.
+2.) I can run multiple commands on mulitple devices as per your request
 3.) Manually backup the Devices
     Apart from this I can also check for below data from my database:
 4.) Check that subnet is behind which device \n """)
@@ -42,3 +43,6 @@ while True:
         continue
     else:
         break
+
+if input1 == 1:
+    Difference.CurrentDif()
