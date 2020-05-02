@@ -14,7 +14,8 @@ from CommonFunc import CommonFunc
 Username = 'test'
 Pwd = 'test'
 
-Ciscodevicelist, juniperdevicelist = CommonFunc.devicelist(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '\\Jsonfiles' + '\\DeviceList.json')
+Ciscodevicelist, juniperdevicelist = CommonFunc.devicelist(os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + '\\Jsonfiles' + '\\DeviceList.json') ## Using os.path.realpath here instead of os.getcwd because this function will be called from Main.py and if we use getcwd the it will print the cwd of BotX.
+
 RunconfigDirPath = os.path.dirname(os.path.dirname(os.path.realpath(__file__))) + "\\" + "ScriptOutput" + "\\" + "RunningConfig"
 Dirlist = os.listdir(RunconfigDirPath)  ## Here we are putting all the directories in the folder /Scriptoutput/RunningConfig/ in a list Dirlist.. This will be list of directories created after running config is copied
 
@@ -57,6 +58,8 @@ def CurrentDif(): #This function will check changes in the config comparing last
                     IP = (device['IP'])
                     netmikoobj = {'device_type':'cisco_ios' , 'host':IP, 'username':Username, 'password':Pwd}
                     latestoutput = CommonFunc.devicelogin_1(netmikoobj, ['terminal length 0', 'show running-config'])
+                    if latestoutput == 'None':
+                        sys.exit()
                     with open('CurrentR.txt', 'w+') as currentrun:
                         print(latestoutput, file=currentrun)
                     Diff = diffios.Compare(lastfile,'CurrentR.txt' )
@@ -66,3 +69,5 @@ def CurrentDif(): #This function will check changes in the config comparing last
 
     if randomno == 0:
         print("Couldnt find the device data, Kindly check if Device Name is correct or its data is backed up via this Script")
+
+DiffinRunConfig()
