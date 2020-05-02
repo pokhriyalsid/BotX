@@ -48,8 +48,10 @@ def devicelogin_1(list, cmdlist):
         netconnect = netmiko.ConnectHandler(**list)
     except netmiko.ssh_exception.NetmikoTimeoutException:
         print("Cant Login to Device {}".format(list['host']))
+        return 'None'
     except netmiko.ssh_exception.NetMikoAuthenticationException:
         print("Credentials not working for {}".format(list['host']))
+        return 'None'
     else:
     #    return netconnect
         output = ''
