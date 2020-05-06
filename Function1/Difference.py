@@ -69,5 +69,3 @@ def CurrentDif(): #This function will check changes in the config comparing last
 
     if randomno == 0:
         print("Couldnt find the device data, Kindly check if Device Name is correct or its data is backed up via this Script")
-
-DiffinRunConfig()
