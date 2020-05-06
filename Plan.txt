@@ -1,3 +1,7 @@
+pretty print
+username and password capture once
+
+************************************************************************************
 -> Create a script bot which will login to all device periodically to capture output of few commands like show interface status, show process cpu history
 
 ->  Run commands to custom group of devices like vlan 101...  or some other command
