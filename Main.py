@@ -3,7 +3,7 @@ import time
 import sys
 import subprocess
 from Function1 import Difference
-from Function2 import func2
+from Function2 import func2_1
 
 randomno = 1
 def msg():
@@ -54,4 +54,4 @@ if input1 == 1:
 if input1 == 2:
     time.sleep(1)
     subprocess.run('cls', shell = True)
-    func2.Mainfunc2()
+    func2_1.Mainfunc2()
