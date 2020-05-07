@@ -61,16 +61,6 @@ else:
         n = n + 1
 
     n = 0
-    ##Below is old code , keeping it safe if required later
-#    for threads in ciscothreadlist:
-#        if (n+1)%5 == 0:            ## This will make sure if more than 5 devices are there is the device list
-#            threads.join()      ## then after the 5th device there is some pause in the code
-#            while True:
-#                no = 1
-#                if ciscothreadlist[n].is_alive():
-#                    print("Still working on {}".format(Ciscodevicelist[no]['Name']))
-#        threads.start()
-#        n = n + 1
 
     for threads in ciscothreadlist:
         if (n+1)%5 == 0:

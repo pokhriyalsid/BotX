@@ -1,6 +1,7 @@
 ## This module has 2 functions
 ## DiffinRunConfig will compare the changes between last 2 running config files saved by the Script
 ## CurrentDif() will login to the Device to check current run and will check any changes as compared to the last file saved by the Script.
+
 import diffios
 import os
 import glob
