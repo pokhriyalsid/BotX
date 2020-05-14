@@ -6,42 +6,13 @@ import subprocess
 Username = 'test'
 Pwd = 'test'
 import threading
-## Delete the EEM, track and ip sla commands
+import socket
+
 ## Send few cmds and then some shut command and then few other commands  and see whats the result
 ## Add some show command at the end of the config commands to verify if there is any return in output. If this cmd doesnt return anything that send a message on the console that check the device and revert it to old config + delete EEM, SLA and track
 ## if device lose access in between but the EEM script brought it back then stop the program to execute other commands
 
 
-print("""A Folder will open in your Screen. Kindly fill the 2 notepad files as below:
-config.txt -> Enter the config here which you want to pushed
-rollback.txt -> Enter the rollback plan here
-
-Leave the files empty if you dont want to run anything""")
-input("Check Anyconnect VPN should not be connected")
-
-
-filepath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  + '\\Jsonfiles' + '\\Function3Files'
-#filepath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  + '\\Jsonfiles' + '\\' + 'Function3config.txt'
-time.sleep(1)
-os.startfile(filepath)
-
-input1 = input("Review all 3 files and type 'Go' to proceed or 'Exit' and press enter: \n")
-if input1 == 'exit' or input1 == 'Exit':
-    sys.exit('Exiting the program as requested')
-if input1 == 'Go' or input1 == 'go':
-    pass
-elif input1 != 'go' and input1 != 'Go'  and input1 != 'Exit' and input1 != 'exit':
-    sys.exit('Not sure what you typed')
-
-deviceip = input("Enter the Device ip to which you want to push the config: \n")
-subprocess.run('cls', shell = True)
-print("Working on {}".format(deviceip))
-
-slaip = input("Type the ip address you want to ping. Rollback script will be pushed if SLA fails: \n")
-netmikoobj = {'device_type':'cisco_ios' , 'host': deviceip, 'username':Username, 'password':Pwd}
-
-
-## Later add code here to validate the ip
 def devicelogin(list, cmdlist):
     try:
         netconnect = netmiko.ConnectHandler(**list)
@@ -57,7 +28,17 @@ def devicelogin(list, cmdlist):
         outputr = ''
         cmdssucceded = []
         for cmds in cmdlist:
-            output = netconnect.send_command(cmds,  auto_find_prompt=False, strip_command = False)
+            try:
+                output = netconnect.send_command(cmds,  auto_find_prompt=False, strip_command = False)
+            except OSError:
+                print("Seems I lost access to the Device and rollback script also coudn't bring the access to the device back. Kindly check manually")
+                cmdssucceded.append(cmds)
+                if len(cmdssucceded) > 0:
+                    print("Few Command's which were pushed are below: \n")
+                    for cmd in cmdssucceded:
+                        print(cmd)
+                sys.exit()
+            #print(output)
             outputr = outputr + '\n' + output
             if '^' in output:
                 print("'{}' command is not working on the device so ignoring the rest of the commands".format(cmds))
@@ -69,21 +50,31 @@ def devicelogin(list, cmdlist):
             elif 'Incomplete command' in output:
                 print("Incomplete command '{}'".format(cmds))
                 if len(cmdssucceded) > 0:
-                    print("Few Command's whic were pushed are below: \n")
+                    print("Few Command's which were pushed are below: \n")
                     for cmd in cmdssucceded:
                         print(cmd)
                 sys.exit()
             else:
                 cmdssucceded.append(cmds)
+                eemstats = netconnect.send_command('do show event manager statistics policy | in rollbackbotx')
+            #    print (eemstats.split()[2]) ## This will print EEM script count and if value is not 0 then script has executed
+                if int(eemstats.split()[2]) > 0 :
+                    print("Rollback script has executed that means SLA has failed")
+                    print("Few Command's which were pushed are below. Kindly check if these commands needs to be removed if not mentioned in rollback script: \n")
+                    for cmd in cmdssucceded:
+                        print(cmd)
+                    netconnect.send_command('no event manager applet rollbackbotx', auto_find_prompt=False)
+                    netconnect.send_command('no track 192', auto_find_prompt=False)
+                    netconnect.send_command('no ip sla 192', auto_find_prompt=False)
+                    sys.exit()
+                #print(netconnect.is_alive())
+
 
         #return outputr
         with open(filepath + '\\' + 'configpushed.txt', 'w+') as configfile:
             configfile.write(outputr)
         print("Output of operation is saved in configpushed.txt.. Will open it now")
         os.startfile(filepath + '\\configpushed.txt')
-        print("Now sleeping for 10 seconds to check if EEM action is invoked else would delete the EEM script and SLA")
-        oo = netconnect.send_command('do show ip int brief') ## because now we are in config mode
-        print(oo)
         return netconnect
     #    print("Command pushed : {}".format(cmdssucceded))
 
@@ -116,7 +107,7 @@ def slafn(list):
         sys.exit()
     else:
         print("Logged in to the Device")
-        eemexist = netconnect.send_command('show event manager statistics policy | in rollback') ## This is to check if EEM script already exists
+        eemexist = netconnect.send_command('show event manager statistics policy | in rollbackbotx') ## This is to check if EEM script already exists
         for items in eemexist.splitlines():
             if items.split()[-1] == 'rollbackbotx':
                 sys.exit('Check EEM script with name rollbackbotx already exists, so not proceeding further')
@@ -126,7 +117,7 @@ def slafn(list):
                 sys.exit('ip sla 192 already exists kindly check, not proceeding with the Script')
         netconnect.send_config_set(slacmds)
         print("Sleeping for 10 sec for the SLA to change the status")
-        time.sleep(10)
+        #time.sleep(10)
         output = netconnect.send_command('show track 192 | in State')
         print("Sla status before the script is {}".format(output))
         if 'Down' in output:
@@ -175,19 +166,55 @@ def slafn(list):
             print("Output of event Script is below:")
             print(outputeem)
             input("Enter to continue")
+            netconnect.disconnect()
 
 
-slafn(netmikoobj)
+def func3():
+    print("""A Folder will open in your Screen. Kindly fill the 2 notepad files as below:
+    config.txt -> Enter the config here which you want to pushed
+    rollback.txt -> Enter the rollback plan here
+    Leave the files empty if you dont want to run anything""")
+    input("Check Anyconnect VPN should not be connected")
+
+    global filepath
+    filepath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  + '\\Jsonfiles' + '\\Function3Files'
+    #filepath = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))  + '\\Jsonfiles' + '\\' + 'Function3config.txt'
+    time.sleep(1)
+    os.startfile(filepath)
+
+    input1 = input("Review all 3 files and type 'Go' to proceed or 'Exit' and press enter: \n")
+    if input1 == 'exit' or input1 == 'Exit':
+        sys.exit('Exiting the program as requested')
+    if input1 == 'Go' or input1 == 'go':
+        pass
+    elif input1 != 'go' and input1 != 'Go'  and input1 != 'Exit' and input1 != 'exit':
+        sys.exit('Not sure what you typed')
+    global deviceip
+    deviceip = input("Enter the Device ip to which you want to push the config: \n")
+    subprocess.run('cls', shell = True)
+    print("Working on {}".format(deviceip))
+
+    global slaip
+    slaip = input("Type the ip address you want to ping. Rollback script will be pushed if SLA fails: \n")
+    global netmikoobj
+    netmikoobj = {'device_type':'cisco_ios' , 'host': deviceip, 'username':Username, 'password':Pwd}
 
 
-with open(filepath + '\\' + 'config.txt') as file:
-    configcmdlist = file.read().splitlines()
-print(configcmdlist)
+    ## Later add code here to validate the ip
+    slafn(netmikoobj)
 
-nc = devicelogin(netmikoobj, configcmdlist)
-print("Script Completed")
 
-## Below we are deleting the track, ip sla and event
-nc.send_command('no event manager applet rollbackbotx', auto_find_prompt=False)
-nc.send_command('no track 192', auto_find_prompt=False)
-nc.send_command('no ip sla 192', auto_find_prompt=False)
+    with open(filepath + '\\' + 'config.txt') as file:
+        configcmdlist = file.read().splitlines()
+    #print(configcmdlist)
+
+    nc = devicelogin(netmikoobj, configcmdlist)
+    print("Script Completed")
+
+    ## Below we are deleting the track, ip sla and event
+    nc.send_command('no event manager applet rollbackbotx', auto_find_prompt=False)
+    nc.send_command('no track 192', auto_find_prompt=False)
+    nc.send_command('no ip sla 192', auto_find_prompt=False)
+
+
+func3()
